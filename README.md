@@ -15,45 +15,49 @@ This is an application has a login page that uses passport to authenticate the u
 ## Session - server.js
 This creates a session middlware saved on the server-side.
 Module directly reads and writes cookies on req/res.
+```
+var session = require("express-session");
+```
 
 Here is where we use our middleware to keep track of our user's login status
 ```
 app.use(session({ secret: "keyboard cat", resave: true, saveUninitialized: true }));
 ```
+- Once user is authenticated, passport session keeps them logged in
 
 ### Options 
  express-session accepts properties in options object
 
+- ``` secret ``` - used to sign the session ID cookie (required)
 - ``` resave ``` - forces session to be saved back to session store
 - ``` saveUninitialized ``` - forces a session that is "uninitialized" to be saved to the store. A session is uninitialized when it is new but not modified.
-- ``` secret ``` - used to sign the session ID cookie (required)
 
 ## Passport - server.js
-
-- Express-compatible authentication middleware for Node.js
+Express-compatible authentication middleware for Node.js
 
 - Uses strategies to authenticate requests (verifying username and password)
 
 - ``` passport.initialize() ``` - initialiaze to use passport in an Express application
 
-- ``` passport.session() ``` - for usingpersistent login sessions.
+- ``` passport.session() ``` - for using persistent login sessions.
 
 
 ## Passport - passport.js
+Use local stratgey to authenticate users that are registered in DB
 
 - ``` var LocalStrategy = require("passport-local").Strategy; ``` - authenticates using usename and passord
-- ``` passort.use(new LocalStrategy())```  - use local stratgey - login with username/email and password
+- ``` passort.use(new LocalStrategy())```  - use local stratgey: login with username/email and password
 - ``` db.User.findOne({where: {email: email}} ``` - find user with email
 
 ### Serialize:
-Store id as cookie is user's brower
+Store id
 ```
 passport.serializeUser(function(user, cb) {
   cb(null, user);
 });
 ```
 ### Deserialize:
-Retrieve id from cookie
+Retrieve id
 ```
 passport.deserializeUser(function(obj, cb) {
   cb(null, obj);
@@ -107,7 +111,7 @@ function handleLoginErr(err) {
 ```fadeIn``` gradually changes opacity from hidden to visible
 
 To redirect to new page:
-window.location.replace("/members");
+```window.location.replace("/members")```;
 
 ## Signup - api-routes.js
 Login form is submitted to the server using POST method:
@@ -126,7 +130,9 @@ db.User.create({
 });
 ```
 
-The password is automatically hashed because of the User method addHook which automatically hashes their password before the user is created. Then the client is redirected to login if an error is not caught.  
+The password is automatically hashed because of the User method addHook which automatically hashes their password before the user is created. 
+
+Then the client is redirected to login if an error is not caught.  
 
 Logout:
 ```
@@ -167,20 +173,18 @@ User.prototype.validPassword = function(password) {
 ## Hash Info
 A hash function takes in a password and returns a hash which is always the same length. 
 
-We don't want to store sensitive data so we hash our password and store that hash.
+- We don't want to store sensitive data so we hash our password and store that hash.
 
-A password can be converted into hash but not the other way around which is why it is good to store the hash itself.
-
-If two users have the same password they would also have the same hash so to prevent this we add a salt before we hash it.
+- If two users have the same password they would also have the same hash so to prevent this we add a salt before we hash it.
 
 ### Salt
 Insures hash is always unique even if password is not unique.
 
-We can then authenticate our users when they log in by hashing their submitted password and comparing that to the stored hash value.
+- We can then authenticate our users when they log in by hashing their submitted password and comparing that to the stored hash value.
 
 ### Bcrypt
-- Neutalize brute force atttacks
-- bcrypt(password, salt, cost) for hashing
+Neutalize brute force atttacks
+- ```bcrypt(password, salt, cost)``` for hashing
 - cost - defines number of rounds algorithm runs
 - increase cost to be more resistent against attacks
 
@@ -192,8 +196,6 @@ Characters:
 ```
 ./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$ 
 ```
-- Once user is authenticated, passport session keeps them logged in
-- Use local stratgey to authenticate users that are registered in DB
 
 ## HTML Pages
 Custom middleware for checking user logged in
@@ -201,7 +203,7 @@ Custom middleware for checking user logged in
 var isAuthenticated = require("../config/middleware/isAuthenticated");
 ```
 
-Routes for "/" and "/login" check authentication:
+Routes for ```"/"``` and ```"/login"``` check authentication:
 ```
 if (req.user) {
     res.redirect("/members");
@@ -212,7 +214,7 @@ Otherwise it send to another file:
 res.sendFile(path.join(__dirname, "../public/signup.html"));
 ```
 
-The "/members" route is authenticated 
+The ```"/members"``` route is authenticated 
 ```
 app.get("/members", isAuthenticated, function(req, res) {
     res.sendFile(path.join(__dirname, "../public/members.html"));
