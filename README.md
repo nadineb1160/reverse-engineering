@@ -2,7 +2,6 @@
 This is an application has a login page that uses passport to authenticate the user and password. 
 
 ## Dependencies - package.json
-#
 ```
     "bcryptjs": "2.4.3",
     "express": "^4.17.0",
@@ -14,8 +13,6 @@ This is an application has a login page that uses passport to authenticate the u
 ```
 
 ## Session - server.js
-#
-
 This creates a session middlware saved on the server-side.
 Module directly reads and writes cookies on req/res.
 
@@ -32,7 +29,6 @@ app.use(session({ secret: "keyboard cat", resave: true, saveUninitialized: true 
 - ``` secret ``` - used to sign the session ID cookie (required)
 
 ## Passport - server.js
-#
 
 - Express-compatible authentication middleware for Node.js
 
@@ -44,7 +40,6 @@ app.use(session({ secret: "keyboard cat", resave: true, saveUninitialized: true 
 
 
 ## Passport - passport.js
-#
 
 - ``` var LocalStrategy = require("passport-local").Strategy; ``` - authenticates using usename and passord
 - ``` passort.use(new LocalStrategy())```  - use local stratgey - login with username/email and password
@@ -66,7 +61,6 @@ passport.deserializeUser(function(obj, cb) {
 ```
 
 ## Routes - api-routes.js
-#
 Call passport.authenticate() and specify stragey:
 ``` 
 app.post("/api/login", passport.authenticate("local"),       function(req, res) {
@@ -76,7 +70,6 @@ app.post("/api/login", passport.authenticate("local"),       function(req, res) 
 If authenticatied, send to members page, otherwise error.
 
 ## Authenticate - isAuthenticated.js
-#
 Continue with request if user is logged in:
 ```
 module.exports = function(req, res, next) {
@@ -88,7 +81,6 @@ module.exports = function(req, res, next) {
 ```
 
 ## Signup - signup.js
-#
 Call ```signUpUser``` from form submit button with email and passord, which does a post to signup routes.
 Redirect to members page if successful otherwise handle errors.
 ```
@@ -118,7 +110,6 @@ To redirect to new page:
 window.location.replace("/members");
 
 ## Signup - api-routes.js
-#
 Login form is submitted to the server using POST method:
 ```
 app.post("/api/signup", function(req, res) {
@@ -160,7 +151,6 @@ app.get("/api/user_data", function(req, res) {
 ```
 
 ## User - user.js
-#
 Before the user is created we hash password:
 ``` 
 User.addHook("beforeCreate", function(user) {
@@ -175,7 +165,6 @@ User.prototype.validPassword = function(password) {
 ``` 
 
 ## Hash Info
-#
 A hash function takes in a password and returns a hash which is always the same length. 
 
 We don't want to store sensitive data so we hash our password and store that hash.
@@ -185,7 +174,6 @@ A password can be converted into hash but not the other way around which is why 
 If two users have the same password they would also have the same hash so to prevent this we add a salt before we hash it.
 
 ### Salt
-
 Insures hash is always unique even if password is not unique.
 
 We can then authenticate our users when they log in by hashing their submitted password and comparing that to the stored hash value.
@@ -208,7 +196,6 @@ Characters:
 - Use local stratgey to authenticate users that are registered in DB
 
 ## HTML Pages
-#
 Custom middleware for checking user logged in
 ```
 var isAuthenticated = require("../config/middleware/isAuthenticated");
@@ -232,4 +219,3 @@ app.get("/members", isAuthenticated, function(req, res) {
 });
 ```
 If a user who is not logged in tries to access this route they will be redirected to the signup page
-
